@@ -21,14 +21,13 @@ function Estado(tokens, msgErro, lerTokenEspecial, acaoSemantica) {
     }
 }
 
+function palavrarPertenceALinguagem(palavra, regex) {
+    var m = palavra.match(regex);
+    return (m.length == 1 && m == palavra);
+}
+
 function checarVariavelEstado2(token) {
-    var m = token.match(/[a-zA-Z][a-zA-Z0-9]*\$/);
-    console.log(m);
-    if (m.length == 1 && m == token) {
-        return 3;
-    } else {
-        return false;
-    }
+    return palavrarPertenceALinguagem(token, /[a-zA-Z][a-zA-Z0-9]*\$/) ? 3 : false;
 }
 
 function adicionarNaTabelaDeSimbolos(token) {
@@ -43,18 +42,46 @@ function checarTabelaSimbolosEstado7(token) {
     return tabelaSimbolos[token] ? 8 : null;
 }
 
+function checarTabelaSimbolosEstado11(token) {
+    return tabelaSimbolos[token] ? 12 : null;
+}
+
+function checarTabelaSimbolosOuNumInteiroEstado13(token) {
+    if (tabelaSimbolos[token]) {
+        return 15;
+    } else {
+        return palavrarPertenceALinguagem(token, /[0-9]+/) ? 14 : null;
+    }
+}
+
+function checarTabelaSimbolosEstado16(token) {
+    return tabelaSimbolos[token] ? 17 : null;
+}
+
+function lerTextoQualquerEstado9(token) {
+    return 9;
+}
+
 estadoInicial = new Estado({ 'programa': 1 }, 'Esperado ID=programa');
 
-/*Estado 0*/ automato.push(estadoInicial);
-/*Estado 1*/ automato.push(new Estado({ 'var': 2 }, 'Esperado ID=var'));
-/*Estado 2*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;', checarVariavelEstado2, adicionarNaTabelaDeSimbolos));
-/*Estado 3*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;'));
-/*Estado 4*/ automato.push(new Estado({ 'leia': 5 }, 'Esperado ID=leia'));
-/*Estado 5*/ automato.push(new Estado({ }, 'Esperando uma variável', checarTabelaSimbolosEstado5));
-/*Estado 6*/ automato.push(new Estado({ 'leia': 5, 'escreva': 7 }, 'Esperando ID=leia ou escreva'));
-/*Estado 7*/ automato.push(new Estado({ '(': 9 }, 'Esperado ID= ( ou uma variável'), checarTabelaSimbolosEstado7);
-/*Estado 8*/ automato.push(new Estado({ 'leia': 5, 'escreva': 7, 'at': 11 }, 'Esperado ID=at ou leia'));
-/*Estado 9*/ automato.push(new Estado({ ')': 10 }, 'Esperado ID=at ou leia'));
+/*Estado  0*/ automato.push(estadoInicial);
+/*Estado  1*/ automato.push(new Estado({ 'var': 2 }, 'Esperado ID=var'));
+/*Estado  2*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;', checarVariavelEstado2, adicionarNaTabelaDeSimbolos));
+/*Estado  3*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;'));
+/*Estado  4*/ automato.push(new Estado({ 'leia': 5 }, 'Esperado ID=leia'));
+/*Estado  5*/ automato.push(new Estado({ }, 'Esperado uma variável', checarTabelaSimbolosEstado5));
+/*Estado  6*/ automato.push(new Estado({ 'leia': 5, 'escreva': 7 }, 'Esperando ID=leia ou escreva'));
+/*Estado  7*/ automato.push(new Estado({ '(': 9 }, 'Esperado ID= ( ou uma variável', checarTabelaSimbolosEstado7));
+/*Estado  8*/ automato.push(new Estado({ 'leia': 5, 'escreva': 7, 'at': 11 }, 'Esperado ID=at, escreva ou leia'));
+/*Estado  9*/ automato.push(new Estado({ ')': 10 }, 'Esperado fecha parentese', lerTextoQualquerEstado9));
+/*Estado 10*/ automato.push(new Estado({ 'leia': 5, 'escreva': 7, 'at': 11}, 'Esperado ID=at, escreva ou leia'));
+/*Estado 11*/ automato.push(new Estado({ }, 'Esperado uma variavel', checarTabelaSimbolosEstado11));
+/*Estado 12*/ automato.push(new Estado({ '=': 13 }, 'Esperado ID= ='));
+/*Estado 13*/ automato.push(new Estado({ }, 'Esperado um número inteiro ou uma váriavel', checarTabelaSimbolosOuNumInteiroEstado13));
+/*Estado 14*/ automato.push(new Estado({ 'at': 11, 'se': 16 }, 'Esperado ID= at ou se'));
+/*Estado 15*/ automato.push(new Estado({ 'at': 11, 'se': 16 }, 'Esperado ID= at ou se'));
+/*Estado 16*/ automato.push(new Estado({ }, 'Esperado uma variável', checarTabelaSimbolosEstado16));
+/*Estado 16*/ automato.push(new Estado({ '>': 18, '<': 18, '>=': 18, '<=': 18, '==': 18, '!=': 18 }, 'Esperado Operadores (<, >, <=, >=, ==, !=)'));
 
 function compilar() {
     estadoAtual = estadoInicial;
@@ -64,10 +91,13 @@ function compilar() {
     var tokens = str.split(RegExp('[ \\n\\s\\r\\t]+'));
 
     for (token of tokens) {
+        console.log(token);
         estadoAtual.lerToken(token);
         if (error) {
             alert(estadoAtual.msgErro);
             break;
         }
     }
+
+    console.log(estadoAtual);
 }
