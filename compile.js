@@ -39,6 +39,10 @@ function checarTabelaSimbolosEstado5(token) {
     return tabelaSimbolos[token] ? 6 : null;
 }
 
+function checarTabelaSimbolosEstado7(token) {
+    return tabelaSimbolos[token] ? 8 : null;
+}
+
 estadoInicial = new Estado({ 'programa': 1 }, 'Esperado ID=programa');
 
 /*Estado 0*/ automato.push(estadoInicial);
@@ -48,6 +52,9 @@ estadoInicial = new Estado({ 'programa': 1 }, 'Esperado ID=programa');
 /*Estado 4*/ automato.push(new Estado({ 'leia': 5 }, 'Esperado ID=leia'));
 /*Estado 5*/ automato.push(new Estado({ }, 'Esperando uma variável', checarTabelaSimbolosEstado5));
 /*Estado 6*/ automato.push(new Estado({ 'leia': 5, 'escreva': 7 }, 'Esperando ID=leia ou escreva'));
+/*Estado 7*/ automato.push(new Estado({ '(': 9 }, 'Esperado ID= ( ou uma variável'), checarTabelaSimbolosEstado7);
+/*Estado 8*/ automato.push(new Estado({ 'leia': 5, 'escreva': 7, 'at': 11 }, 'Esperado ID=at ou leia'));
+/*Estado 9*/ automato.push(new Estado({ ')': 10 }, 'Esperado ID=at ou leia'));
 
 function compilar() {
     estadoAtual = estadoInicial;
