@@ -21,7 +21,7 @@ function Estado(tokens, msgErro, lerTokenEspecial, acaoSemantica) {
     }
 }
 
-function checarVariavel(token) {
+function checarVariavelEstado2(token) {
     var m = token.match(/[a-zA-Z][a-zA-Z0-9]*\$/);
     console.log(m);
     if (m.length == 1 && m == token) {
@@ -35,20 +35,26 @@ function adicionarNaTabelaDeSimbolos(token) {
     tabelaSimbolos[token] = true;
 }
 
+function checarTabelaSimbolosEstado5(token) {
+    return tabelaSimbolos[token] ? 6 : null;
+}
+
 estadoInicial = new Estado({ 'programa': 1 }, 'Esperado ID=programa');
 
-automato.push(estadoInicial);
-automato.push(new Estado({ 'var': 2 }, 'Esperado ID=var'));
-automato.push(new Estado({ ';': 4 }, 'Esperado ID=;', checarVariavel, adicionarNaTabelaDeSimbolos));
-automato.push(new Estado({ ';': 4 }, 'Esperado ID=;'));
-automato.push(new Estado({ 'leia': 5 }, 'Esperado ID=leia'));
+/*Estado 0*/ automato.push(estadoInicial);
+/*Estado 1*/ automato.push(new Estado({ 'var': 2 }, 'Esperado ID=var'));
+/*Estado 2*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;', checarVariavelEstado2, adicionarNaTabelaDeSimbolos));
+/*Estado 3*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;'));
+/*Estado 4*/ automato.push(new Estado({ 'leia': 5 }, 'Esperado ID=leia'));
+/*Estado 5*/ automato.push(new Estado({ }, 'Esperando uma variável', checarTabelaSimbolosEstado5));
+/*Estado 6*/ automato.push(new Estado({ 'leia': 5, 'escreva': 7 }, 'Esperando ID=leia ou escreva'));
 
 function compilar() {
     estadoAtual = estadoInicial;
     tabelaSimbolos = {};
     error = false;
     var str = document.getElementById('txtEditor').value;
-    var tokens = str.split(RegExp(' |\\n|\\s|\\r'));
+    var tokens = str.split(RegExp('[ \\n\\s\\r\\t]+'));
 
     for (token of tokens) {
         estadoAtual.lerToken(token);
