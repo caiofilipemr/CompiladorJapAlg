@@ -81,7 +81,7 @@ estadoInicial = new Estado({ 'programa': 1 }, 'Esperado ID=programa');
 /*Estado 14*/ automato.push(new Estado({ 'at': 11, 'se': 16 }, 'Esperado ID= at ou se'));
 /*Estado 15*/ automato.push(new Estado({ 'at': 11, 'se': 16 }, 'Esperado ID= at ou se'));
 /*Estado 16*/ automato.push(new Estado({ }, 'Esperado uma variável', checarTabelaSimbolosEstado16));
-/*Estado 16*/ automato.push(new Estado({ '>': 18, '<': 18, '>=': 18, '<=': 18, '==': 18, '!=': 18 }, 'Esperado Operadores (<, >, <=, >=, ==, !=)'));
+/*Estado 17*/ automato.push(new Estado({ '>': 18, '<': 18, '>=': 18, '<=': 18, '==': 18, '!=': 18 }, 'Esperado Operadores (<, >, <=, >=, ==, !=)'));
 
 function compilar() {
     estadoAtual = estadoInicial;
