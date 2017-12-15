@@ -20,7 +20,7 @@ window.onload = function() {
 	}
 
 	function displayContents(contents) {
-		document.getElementById('txtEditor').value = contents;
+		document.getElementById('txtEditor').value = contents.trim();
 	}
 	
 	document.getElementById('file-input')
@@ -159,7 +159,7 @@ function compilar() {
     estadoAtual = estadoInicial;
     tabelaSimbolos = {};
     error = false;
-    var str = document.getElementById('txtEditor').value;
+    var str = document.getElementById('txtEditor').value.trim();
     var tokens = str.split(RegExp('[ \\n\\s\\r\\t]+'));
 
     for (token of tokens) {
