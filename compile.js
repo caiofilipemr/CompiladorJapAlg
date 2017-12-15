@@ -49,7 +49,7 @@ function palavrarPertenceALinguagem(palavra, regex) {
     return (m.length == 1 && m == palavra);
 }
 
-function checarVariavelEstado2(token) {
+function checarVariavelEstado2E3(token) {
     return palavrarPertenceALinguagem(token, /[a-zA-Z][a-zA-Z0-9]*\$/) ? 3 : false;
 }
 
@@ -121,8 +121,8 @@ estadoInicial = new Estado({ 'programa': 1 }, 'Esperado ID=programa');
 
 /*Estado  0*/ automato.push(estadoInicial);
 /*Estado  1*/ automato.push(new Estado({ 'var': 2 }, 'Esperado ID=var'));
-/*Estado  2*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;', checarVariavelEstado2, adicionarNaTabelaDeSimbolos));
-/*Estado  3*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;'));
+/*Estado  2*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;', checarVariavelEstado2E3, adicionarNaTabelaDeSimbolos));
+/*Estado  3*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;', checarVariavelEstado2E3, adicionarNaTabelaDeSimbolos));
 /*Estado  4*/ automato.push(new Estado({ 'leia': 5 }, 'Esperado ID=leia'));
 /*Estado  5*/ automato.push(new Estado({ }, 'Esperado uma variável', checarTabelaSimbolosEstado5));
 /*Estado  6*/ automato.push(new Estado({ 'leia': 5, 'escreva': 7 }, 'Esperando ID=leia ou escreva'));
