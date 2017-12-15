@@ -4,6 +4,7 @@ var estadoInicial;
 var estadoAtual;
 var tabelaSimbolos;
 var estadoFinal;
+var linguagemCompilada;
 
 window.onload = function() {
 	function readSingleFile(e) {
@@ -34,9 +35,13 @@ function Estado(tokens, msgErro, lerTokenEspecial, acaoSemantica) {
     this.acaoSemantica = acaoSemantica || function(token) {};
     this.lerToken = function (token) {
         if (tokens[token]) {
-            estadoAtual = automato[tokens[token]];
+            var par = tokens[token];
+            estadoAtual = automato[par[0]];
+            linguagemCompilada += par[1];
         } else if (this.lerTokenEspecial(token)) {
-            estadoAtual = automato[this.lerTokenEspecial(token)];
+            var par = this.lerTokenEspecial(token);
+            estadoAtual = automato[par[0]];
+            linguagemCompilada += par[1];
             this.acaoSemantica(token);
         } else {
             error = true;
@@ -117,11 +122,11 @@ function lerTextoQualquerEstado31(token) {
     return 31;
 }
 
-estadoInicial = new Estado({ 'programa': 1 }, 'Esperado ID=programa');
+estadoInicial = new Estado({ 'programa': [1, '#include <stdio.h>\n\n'] }, 'Esperado ID=programa');
 
 /*Estado  0*/ automato.push(estadoInicial);
-/*Estado  1*/ automato.push(new Estado({ 'var': 2 }, 'Esperado ID=var'));
-/*Estado  2*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;', checarVariavelEstado2E3, adicionarNaTabelaDeSimbolos));
+/*Estado  1*/ automato.push(new Estado({ 'var': [2, 'int '] }, 'Esperado ID=var'));
+/*Estado  2*/ automato.push(new Estado({ ';': [4, 'int main()\n{\n'] }, 'Esperado ID=;', checarVariavelEstado2E3, adicionarNaTabelaDeSimbolos));
 /*Estado  3*/ automato.push(new Estado({ ';': 4 }, 'Esperado ID=;', checarVariavelEstado2E3, adicionarNaTabelaDeSimbolos));
 /*Estado  4*/ automato.push(new Estado({ 'leia': 5 }, 'Esperado ID=leia'));
 /*Estado  5*/ automato.push(new Estado({ }, 'Esperado uma variável', checarTabelaSimbolosEstado5));
@@ -159,6 +164,7 @@ function compilar() {
     estadoAtual = estadoInicial;
     tabelaSimbolos = {};
     error = false;
+    linguagemCompilada = '';
     var str = document.getElementById('txtEditor').value.trim();
     var tokens = str.split(RegExp('[ \\n\\s\\r\\t]+'));
 
