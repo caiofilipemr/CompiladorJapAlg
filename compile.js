@@ -3,6 +3,7 @@ var automato = [];
 var estadoInicial;
 var estadoAtual;
 var tabelaSimbolos;
+var estadoFinal;
 
 window.onload = function() {
 	function readSingleFile(e) {
@@ -19,12 +20,11 @@ window.onload = function() {
 	}
 
 	function displayContents(contents) {
-		alert('fim');
 		document.getElementById('txtEditor').value = contents;
 	}
 	
 	document.getElementById('file-input')
-	.addEventListener('change', readSingleFile, false);
+    .addEventListener('change', readSingleFile, false);
 }
   
 function Estado(tokens, msgErro, lerTokenEspecial, acaoSemantica) {
@@ -65,6 +65,10 @@ function checarTabelaSimbolosEstado7(token) {
     return tabelaSimbolos[token] ? 8 : null;
 }
 
+function lerTextoQualquerEstado9(token) {
+    return 9;
+}
+
 function checarTabelaSimbolosEstado11(token) {
     return tabelaSimbolos[token] ? 12 : null;
 }
@@ -81,8 +85,36 @@ function checarTabelaSimbolosEstado16(token) {
     return tabelaSimbolos[token] ? 17 : null;
 }
 
-function lerTextoQualquerEstado9(token) {
-    return 9;
+function checarTabelaSimbolosOuNumInteiroEstado18(token) {
+    if (tabelaSimbolos[token]) {
+        return 20;
+    } else {
+        return palavrarPertenceALinguagem(token, /[0-9]+/) ? 19 : null;
+    }
+}
+
+function checarTabelaSimbolosEstado22(token) {
+    return tabelaSimbolos[token] ? 23 : null;
+}
+
+function checarTabelaSimbolosOuNumInteiroEstado24(token) {
+    if (tabelaSimbolos[token]) {
+        return 25;
+    } else {
+        return palavrarPertenceALinguagem(token, /[0-9]+/) ? 27 : null;
+    }
+}
+
+function checarTabelaSimbolosOuNumInteiroEstado26(token) {
+    if (tabelaSimbolos[token]) {
+        return 25;
+    } else {
+        return palavrarPertenceALinguagem(token, /[0-9]+/) ? 27 : null;
+    }
+}
+
+function lerTextoQualquerEstado31(token) {
+    return 31;
 }
 
 estadoInicial = new Estado({ 'programa': 1 }, 'Esperado ID=programa');
@@ -105,6 +137,23 @@ estadoInicial = new Estado({ 'programa': 1 }, 'Esperado ID=programa');
 /*Estado 15*/ automato.push(new Estado({ 'at': 11, 'se': 16 }, 'Esperado ID= at ou se'));
 /*Estado 16*/ automato.push(new Estado({ }, 'Esperado uma variável', checarTabelaSimbolosEstado16));
 /*Estado 17*/ automato.push(new Estado({ '>': 18, '<': 18, '>=': 18, '<=': 18, '==': 18, '!=': 18 }, 'Esperado Operadores (<, >, <=, >=, ==, !=)'));
+/*Estado 18*/ automato.push(new Estado({ }, 'Esperado um número inteiro ou uma váriavel', checarTabelaSimbolosOuNumInteiroEstado18));
+/*Estado 19*/ automato.push(new Estado({ 'entao': 21 }, 'Esperado Id= entao'));
+/*Estado 20*/ automato.push(new Estado({ 'entao': 21 }, 'Esperado Id= entao'));
+/*Estado 21*/ automato.push(new Estado({ 'at': 22 }, 'Esperado ID= at'));
+/*Estado 22*/ automato.push(new Estado({ }, 'Esperado uma variável', checarTabelaSimbolosEstado22));
+/*Estado 23*/ automato.push(new Estado({ '=': 24 }, 'Esperado Id= ='));
+/*Estado 24*/ automato.push(new Estado({ }, 'Esperado um número inteiro ou uma váriavel', checarTabelaSimbolosOuNumInteiroEstado24));
+/*Estado 25*/ automato.push(new Estado({ '+': 26, '-': 26, '*': 26, ';': 28 }, 'Esperado Operacoes (+,-,*) ou ;'));
+/*Estado 26*/ automato.push(new Estado({ }, 'Esperado um número inteiro ou uma váriavel', checarTabelaSimbolosOuNumInteiroEstado26));
+/*Estado 27*/ automato.push(new Estado({ '+': 26, '-': 26, '*': 26, ';': 28 }, 'Esperado Operacoes (+,-,*) ou ;'));
+/*Estado 28*/ automato.push(new Estado({ 'senao': 29 }, 'Esperado Id= senao'));
+/*Estado 29*/ automato.push(new Estado({ 'escreva': 30 }, 'Esperado Id= escreva'));
+/*Estado 30*/ automato.push(new Estado({ '(': 31 }, 'Esperado Id= ('));
+/*Estado 31*/ automato.push(new Estado({ ')': 32 }, 'Esperado fecha parentese', lerTextoQualquerEstado31));
+/*Estado 32*/ automato.push(new Estado({ 'fim': 33 }, 'Esperado Id= fim'));
+estadoFinal = new Estado({ }, 'Compilado');
+/*Estado 33*/ automato.push(estadoFinal);
 
 function compilar() {
     estadoAtual = estadoInicial;
@@ -121,6 +170,11 @@ function compilar() {
             break;
         }
     }
-
-    console.log(estadoAtual);
+    if (estadoAtual == estadoFinal){
+        console.log('Programa Compilado Com Sucesso');
+        document.getElementById('compilado').value  = 
+        document.getElementById('txtEditor').value;
+    }
+    else
+        console.log('Erro');
 }

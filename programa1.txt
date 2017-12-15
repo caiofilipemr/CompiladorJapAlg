@@ -1,0 +1,12 @@
+programa 
+  var cont1$ ;
+  leia cont1$
+  leia cont1$
+  escreva ( teste2 )
+  at cont1$ = cont1$
+  se cont1$ >= cont1$ entao
+     at cont1$ = cont1$ + 10 * 8909 - cont1$ ;
+  senao
+     escreva ( erro )
+fim
+
